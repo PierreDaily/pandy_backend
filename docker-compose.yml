@@ -1,0 +1,35 @@
+version: "3.1"
+
+services:
+  myapi:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - ./src:/usr/src/app/src
+      - item_images:/usr/src/app/upload/img
+
+  db:
+    image: postgis/postgis:13-master
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - "barcode_db:/var/lib/postgresql/data"
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+      - "3000:443"
+    volumes:
+      - item_images:/usr/src/app/upload/img
+
+volumes:
+  barcode_db:
+  item_images:
