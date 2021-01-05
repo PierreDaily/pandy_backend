@@ -1,21 +1,25 @@
-import express from "express";
-import Joi from "joi";
- 
-const port = process.env.API_PORT;
+import "reflect-metadata";
+import { createConnection, getManager } from "typeorm";
+import { User } from "./entity/User";
 
-const app = express();
+createConnection()
+  .then(async (connection) => {
+    // console.log("Inserting a new user into the database...");
+    // const user = new User();
+    // user.name = "Timber";
+    // user.email = "Saw";
+    // user.password = "dsfds";
+    // user.role = "admin";
 
-app.get("/", (req, res) => {
-  const schema = Joi.object({
-    name: Joi.string().required(),
-  });
+    // await connection.manager.save(user);
+    // console.log("Saved a new user with id: " + user.id);
 
-  const { error } = schema.validate({ name:req.query.name });
+    // console.log("Loading users from the database...");
+    // const users = await connection.manager.find(User);
+    // console.log("Loaded users: ", users);
 
-    if (error) {
-      return res.status(400).send({ error });
-    }
 
-  res.status(200).send();
-});
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+    // console.log("Here you can setup and run express/koa/any other framework.");
+  })
+  .catch((error) => console.log(error));

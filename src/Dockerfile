@@ -10,6 +10,7 @@ COPY package*.json ./
 # Run the command inside your image filesystem.
 RUN npm install
 RUN npm install -g typescript
+RUN npm install -g typeorm
 RUN npm install -g ts-node
 
 # COPY . .
