@@ -10,14 +10,14 @@ import { IsEmail } from "class-validator";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
 
   @Column({
     type: "varchar",
     length: 64,
     unique: true,
   })
-  name: string;
+  name!: string;
 
   @Column({
     type: "varchar",
@@ -25,23 +25,23 @@ export class User {
     unique: true,
   })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @Column({
     type: "varchar",
     length: 60,
   })
-  password: string;
+  password!: string;
 
   @Column({
     type: "varchar",
     length: 10,
   })
-  role: string;
+  role!: string;
 
   @Column({ default: true })
-  active: boolean;
+  active!: boolean;
 
-  @CreateDateColumn() public createdAt: Date;
-  @UpdateDateColumn() public updatedAt: Date;
+  @CreateDateColumn() public createdAt!: Date;
+  @UpdateDateColumn() public updatedAt!: Date;
 }
