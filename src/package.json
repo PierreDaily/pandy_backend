@@ -25,6 +25,8 @@
     "typescript": "3.3.3333"
   },
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "bcrypt": "^5.0.0",
     "class-validator": "^0.12.2",
     "express": "^4.17.1",
     "joi": "^17.3.0",
