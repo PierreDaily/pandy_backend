@@ -6,6 +6,15 @@ import { getManager } from "typeorm";
 import logger from "../logger";
 import { User } from "../entity/User";
 
+declare global {
+  namespace Express {
+    // tslint:disable-next-line:no-empty-interface
+    interface User {
+      id: string;
+    }
+  }
+}
+
 const saltRounds = 10;
 
 export const user = {
@@ -45,7 +54,6 @@ export const user = {
       await getManager().save(user);
       logger.info(`create new user with id : ${user.id}`);
       res.status(201).send({ data: { id: user.id } });
-      
     } catch (err) {
       logger.error(err);
       res
@@ -53,31 +61,27 @@ export const user = {
         .send({ error: [{ message: "error during user creation process" }] });
     }
   },
-  // get: async function (req, res) {
-  //   const schema = Joi.object({
-  //     id: Joi.string()
-  //       .guid({
-  //         version: ["uuidv4"],
-  //       })
-  //       .required(),
-  //   });
+  get: async function (req: express.Request, res: express.Response) {
+    const schema = Joi.object({
+      id: Joi.string()
+        .guid({
+          version: ["uuidv4"],
+        })
+        .required(),
+    });
 
-  //   try {
-  //     const {
-  //       user: { id },
-  //     } = req;
+    try {
+      const id = req?.user?.id;
+      const { error, value } = schema.validate({ id });
 
-  //     const { error } = schema.validate({ id });
-
-  //     if (error) {
-  //       return res.status(400).send({ error });
-  //     }
-
-  //     const user = await model.User.findOne({ id });
-  //     res.status(200).send({ data: user });
-  //   } catch (err) {
-  //     logger.warn(err);
-  //     res.status(404).send({ error: { message: "user doesn't exist" } });
-  //   }
-  // },
+      if (error) {
+        return res.status(400).send({ error });
+      }
+      const user = await getManager().findOne(User, { id: value.id });
+      res.status(200).send({ data: user });
+    } catch (err) {
+      logger.warn(err);
+      res.status(404).send({ error: { message: "user doesn't exist" } });
+    }
+  },
 };

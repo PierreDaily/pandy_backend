@@ -24,6 +24,7 @@ app.get("/", (req,res) => {
 });
 
 app.post("/user", controller.user.create);
+app.get("/user", controller.user.get);
 
 
 app.listen(port, () => console.log(`myapi listening on port ${port}!`));
