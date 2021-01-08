@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import express from "express";
 import Joi from "joi";
-import { getManager } from "typeorm";
+import { getManager, getRepository } from "typeorm";
 
 import logger from "../logger";
-import { role } from "../constants";
+import { ROLE } from "../constants";
 import { Role } from "../entity/Role";
 import { User } from "../entity/User";
 
@@ -13,6 +13,7 @@ declare global {
     // tslint:disable-next-line:no-empty-interface
     interface User {
       id: string;
+      role:string;
     }
   }
 }
@@ -48,7 +49,7 @@ export const user = {
           .send({ error: [{ message: "user name or email already exist" }] });
       }
 
-      const userRole = await getManager().findOne(Role, { name: role.USER });
+      const userRole = await getManager().findOne(Role, { name: ROLE.USER });
 
       if (userRole) {
         user.name = value.name;
@@ -89,7 +90,11 @@ export const user = {
       if (error) {
         return res.status(400).send({ error });
       }
-      const user = await getManager().findOne(User, { id: value.id });
+
+      const userRepository = getRepository(User);
+      const user = await userRepository.findOne({ where: {id: value.id}, relations: ["role"] });
+
+     //  const user = await getManager().findOne(User, { id: value.id });
       res.status(200).send({ data: user });
     } catch (err) {
       logger.warn(err);
