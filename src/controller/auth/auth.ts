@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import express from "express";
 import Joi from "joi";
 import jwt from "jsonwebtoken";
-import { getManager } from "typeorm";
+import { getRepository } from "typeorm";
 
 import logger from "../../logger";
 import { User } from "../../entity/User";
@@ -110,7 +110,8 @@ export const auth = {
         return res.status(400).send({ error });
       }
 
-      const existingUser = await getManager().findOne(User, { email });
+      const userRepository = getRepository(User);
+      const existingUser = await userRepository.findOne({ where: {email}, relations: ["role"] });
 
       if (existingUser && existingUser.password) {
         const isValid = await bcrypt.compare(password, existingUser.password);
@@ -120,11 +121,11 @@ export const auth = {
             data: {
               access_token: _createAccessToken({
                 id: existingUser.id,
-                role: existingUser.role,
+                role: existingUser.role.name,
               }),
               refresh_token: _createRefreshToken({
                 id: existingUser.id,
-                role: existingUser.role,
+                role: existingUser.role.name,
               }),
             },
           });

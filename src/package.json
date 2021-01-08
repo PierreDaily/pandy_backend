@@ -7,8 +7,9 @@
     "dev": "nodemon --exec ts-node ./index.ts",
     "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "migration:create": "ts-node ./node_modules/.bin/typeorm migration:create -n",
     "migration:revert": "ts-node ./node_modules/.bin/typeorm migration:revert",
-    "migration:run": "ts-node ./node_modules/.bin/typeorm migration:run",
+    "migration:run": "ts-node ./node_modules/.bin/typeorm migration:run -t=false",
     "migration:generate": "ts-node ./node_modules/.bin/typeorm migration:generate -n"
   },
   "author": "",

@@ -4,6 +4,8 @@ import Joi from "joi";
 import { getManager } from "typeorm";
 
 import logger from "../logger";
+import { role } from "../constants";
+import { Role } from "../entity/Role";
 import { User } from "../entity/User";
 
 declare global {
@@ -46,14 +48,24 @@ export const user = {
           .send({ error: [{ message: "user name or email already exist" }] });
       }
 
-      user.name = value.name;
-      user.email = value.email;
-      user.password = hashPassword;
-      user.role = "USER";
+      const userRole = await getManager().findOne(Role, { name: role.USER });
 
-      await getManager().save(user);
-      logger.info(`create new user with id : ${user.id}`);
-      res.status(201).send({ data: { id: user.id } });
+      if (userRole) {
+        user.name = value.name;
+        user.email = value.email;
+        user.password = hashPassword;
+        user.role = userRole;
+
+        await getManager().save(user);
+        logger.info(`create new user with id : ${user.id}`);
+        return res.status(201).send({ data: { id: user.id } });
+      }
+
+      logger.error("role 'user' doesn't exist");
+      return res
+      .status(500)
+      .send({ error: [{ message: "error during user creation process" }] });
+
     } catch (err) {
       logger.error(err);
       res

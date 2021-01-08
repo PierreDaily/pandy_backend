@@ -3,9 +3,12 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Column,
+  ManyToOne,
   UpdateDateColumn,
 } from "typeorm";
 import { IsEmail } from "class-validator";
+
+import {Role} from "./Role";
 
 @Entity()
 export class User {
@@ -33,11 +36,8 @@ export class User {
   })
   password!: string;
 
-  @Column({
-    type: "varchar",
-    length: 10,
-  })
-  role!: string;
+  @ManyToOne(() => Role, role => role.name)
+  role!: Role;
 
   @Column({ default: true })
   active!: boolean;
