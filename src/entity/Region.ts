@@ -2,7 +2,10 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
+    OneToMany
   } from "typeorm";
+
+  import {City} from "./City";
   
   @Entity()
   export class Region{
@@ -22,4 +25,7 @@ import {
         unique: true,
       })
     nameZhHk!: string;
+
+    @OneToMany(() => City, city => city.region)
+    cities!: City[];
   }
