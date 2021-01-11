@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 
 import { Ability, AbilityBuilder } from "@casl/ability";
 
+import logger from "../logger";
 import { ROLE } from "../constants";
 
 declare global {
@@ -44,6 +45,7 @@ function permissionMiddleware(action: Action, entity: Subject): RequestHandler {
     if (hasAuthorisation) {
       next();
     } else {
+      logger.warn(`User : ${req.user?.id} isn't allowed to access ${req.method} : ${req.path}`)
       res.status(403).send({ error: { message: "Access denied" } });
     }
   };
