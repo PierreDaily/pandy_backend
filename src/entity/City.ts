@@ -1,6 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 
-import { Region } from "./Region";
+import { AddressDetail, Region } from ".";
 
 @Entity()
 export class City {
@@ -21,6 +27,9 @@ export class City {
   })
   nameZhHk!: string;
 
-  @ManyToOne(() => Region, (region) => region.cities, {nullable:false})
-  region!:Region;
+  @ManyToOne(() => Region, (region) => region.cities, { nullable: false })
+  region!: Region;
+
+  @OneToMany(() => AddressDetail, (addressDetail) => addressDetail.city)
+  addressDetailList!: AddressDetail[];
 }

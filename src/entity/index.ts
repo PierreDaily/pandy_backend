@@ -1,3 +1,4 @@
+export * from "./AddressDetail";
 export * from "./City";
 export * from "./Photo";
 export * from "./Region";
