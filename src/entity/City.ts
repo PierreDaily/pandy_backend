@@ -15,14 +15,14 @@ export class City {
 
   @Column({
     type: "varchar",
-    length: 16,
+    length: 50,
     unique: true,
   })
   nameEn!: string;
 
   @Column({
     type: "varchar",
-    length: 16,
+    length: 50,
     unique: true,
   })
   nameZhHk!: string;
