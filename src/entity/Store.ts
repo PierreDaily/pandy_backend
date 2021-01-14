@@ -6,7 +6,7 @@ import {
   ManyToOne,
   ManyToMany,
 } from "typeorm";
-import { Geometry } from "geojson";
+import { Point } from "geojson";
 
 import { AddressDetail, Branch } from ".";
 
@@ -15,8 +15,8 @@ export class Store {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "geometry" })
-  location!: Geometry;
+  @Column("geometry", { srid: 4326, spatialFeatureType: "Point" })
+  location!: Point;
 
   @ManyToOne(() => Branch, (branch) => branch.id, { nullable: false })
   branch!: Branch;
