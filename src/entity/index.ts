@@ -2,6 +2,7 @@ export * from "./AddressDetail";
 export * from "./Branch";
 export * from "./Brand";
 export * from "./City";
+export * from "./Item";
 export * from "./Photo";
 export * from "./Region";
 export * from "./Role";
