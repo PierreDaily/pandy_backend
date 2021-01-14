@@ -20,11 +20,7 @@ app.use(express.json());
 app.post("/auth", controller.auth.authenticateUser);
 app.use(accessTokenMiddleWare);
 
-app
-  .route("/user")
-  .post(permissionMiddleware("create", "User"), controller.user.create);
-app.get("/user", controller.user.get);
-
 app.use("/branch", router.branch);
+app.use("/user", router.user);
 
 app.listen(port, () => console.log(`myapi listening on port ${port}!`));

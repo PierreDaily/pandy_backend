@@ -3,6 +3,6 @@ import { branch } from "./branch";
 // const { item } = require("./item");
 // const { price } = require("./price");
 // const { store } = require("./store");
-// const { user } = require("./user");
+import { user } from "./user";
 
-export { branch };
+export { branch, user };
