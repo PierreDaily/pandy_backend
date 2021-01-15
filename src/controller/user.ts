@@ -13,7 +13,7 @@ declare global {
     // tslint:disable-next-line:no-empty-interface
     interface User {
       id: string;
-      role:string;
+      role: string;
     }
   }
 }
@@ -64,9 +64,8 @@ export const user = {
 
       logger.error("role 'user' doesn't exist");
       return res
-      .status(500)
-      .send({ error: [{ message: "error during user creation process" }] });
-
+        .status(500)
+        .send({ error: [{ message: "error during user creation process" }] });
     } catch (err) {
       logger.error(err);
       res
@@ -92,9 +91,11 @@ export const user = {
       }
 
       const userRepository = getRepository(User);
-      const user = await userRepository.findOne({ where: {id: value.id}, relations: ["role"] });
+      const user = await userRepository.findOne({
+        where: { id: value.id },
+        relations: ["role"],
+      });
 
-     //  const user = await getManager().findOne(User, { id: value.id });
       res.status(200).send({ data: user });
     } catch (err) {
       logger.warn(err);
