@@ -20,6 +20,7 @@ app.use(express.json());
 app.post("/auth", controller.auth.authenticateUser);
 app.use(accessTokenMiddleWare);
 
+app.use("/brand", router.brand);
 app.use("/branch", router.branch);
 app.use("/user", router.user);
 

@@ -6,6 +6,7 @@ import { Branch } from "../../entity";
 
 export const getList = async (req: express.Request, res: express.Response) => {
   try {
+    console.log(req.headers.acce);
     const branchRepository = getRepository(Branch);
     const branchList = await branchRepository.find();
 
