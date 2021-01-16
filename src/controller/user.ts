@@ -95,11 +95,16 @@ export const user = {
         where: { id: value.id },
         relations: ["role"],
       });
+      if (user) {
+        return res.status(200).send({ data: user });
+      }
 
-      res.status(200).send({ data: user });
+      return res.status(404).send({ error: { message: "user doesn't exist" } });
     } catch (err) {
       logger.warn(err);
-      res.status(404).send({ error: { message: "user doesn't exist" } });
+      res
+        .status(500)
+        .send({ error: [{ message: "error during user creation process" }] });
     }
   },
 };
