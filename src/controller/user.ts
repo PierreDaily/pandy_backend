@@ -1,12 +1,8 @@
-import bcrypt from "bcrypt";
 import express from "express";
 import Joi from "joi";
-import { getManager, getRepository } from "typeorm";
 
 import logger from "../logger";
-import { ROLE } from "../constants";
-import { Role } from "../entity/Role";
-import { User } from "../entity/User";
+import { User as UserModel } from "../model";
 
 declare global {
   namespace Express {
@@ -17,8 +13,6 @@ declare global {
     }
   }
 }
-
-const saltRounds = 10;
 
 export const user = {
   create: async function (req: express.Request, res: express.Response) {
@@ -36,12 +30,7 @@ export const user = {
     }
 
     try {
-      const user = new User();
-      const hashPassword = await bcrypt.hash(value.password, saltRounds);
-
-      const existingUser = await getManager().findOne(User, {
-        where: [{ name }, { email }],
-      });
+      const existingUser = UserModel.exist({ name, email });
 
       if (existingUser) {
         return res
@@ -49,23 +38,12 @@ export const user = {
           .send({ error: [{ message: "user name or email already exist" }] });
       }
 
-      const userRole = await getManager().findOne(Role, { name: ROLE.USER });
-
-      if (userRole) {
-        user.name = value.name;
-        user.email = value.email;
-        user.password = hashPassword;
-        user.role = userRole;
-
-        await getManager().save(user);
-        logger.info(`create new user with id : ${user.id}`);
-        return res.status(201).send({ data: { id: user.id } });
-      }
-
-      logger.error("role 'user' doesn't exist");
-      return res
-        .status(500)
-        .send({ error: [{ message: "error during user creation process" }] });
+      const userId = await UserModel.create(
+        value.name,
+        value.email,
+        value.password
+      );
+      return res.status(201).send({ data: { id: userId } });
     } catch (err) {
       logger.error(err);
       res
@@ -74,6 +52,7 @@ export const user = {
     }
   },
   get: async function (req: express.Request, res: express.Response) {
+    const userModel = new UserModel();
     const schema = Joi.object({
       id: Joi.string()
         .guid({
@@ -90,11 +69,7 @@ export const user = {
         return res.status(400).send({ error });
       }
 
-      const userRepository = getRepository(User);
-      const user = await userRepository.findOne({
-        where: { id: value.id },
-        relations: ["role"],
-      });
+      const user = await userModel.findOne({ id });
       if (user) {
         return res.status(200).send({ data: user });
       }
