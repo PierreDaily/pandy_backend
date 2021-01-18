@@ -1,6 +1,5 @@
 import express from "express";
 import Joi from "joi";
-import { getRepository, Like } from "typeorm";
 
 import * as model from "../model";
 import logger from "../logger";
