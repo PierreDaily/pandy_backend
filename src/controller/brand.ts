@@ -2,13 +2,11 @@ import express from "express";
 import Joi from "joi";
 import { getRepository, Like } from "typeorm";
 
+import * as model from "../model";
 import logger from "../logger";
-import { Brand } from "../entity";
 
 export const brand = {
   create: async function (req: express.Request, res: express.Response) {
-    const brandRepository = getRepository(Brand);
-
     const schema = Joi.object({
       name: Joi.string().required(),
     });
@@ -22,17 +20,10 @@ export const brand = {
     }
 
     try {
+      const brandModel = new model.Brand();
       const formatedName = validation.value.name.toLowerCase();
-      const reqBrand = await brandRepository.findOne({
-        where: [
-          {
-            nameEn: formatedName,
-          },
-          {
-            nameZhHk: formatedName,
-          },
-        ],
-      });
+
+      const reqBrand = await brandModel.findOne({ name: formatedName });
 
       if (reqBrand) {
         return res
@@ -40,11 +31,7 @@ export const brand = {
           .json({ error: { message: "brand already exist" } });
       }
 
-      const newBrand = new Brand();
-      newBrand.nameEn = formatedName;
-      newBrand.nameZhHk = formatedName;
-
-      await brandRepository.save(newBrand);
+      const newBrand = await brandModel.create(formatedName);
 
       return res
         .status(201)
@@ -90,33 +77,14 @@ export const brand = {
       return res.status(400).send({ error: validation.error });
     }
 
-    const brandRepository = getRepository(Brand);
-
     try {
-      const result = await brandRepository.find({
-        order: {
-          nameEn: validation.value.order || "ASC",
-        },
-        skip: validation.value.offset,
-        take: validation.value.limit,
-        where: search
-          ? [
-              {
-                nameEn: Like(
-                  `${validation.value.search}${
-                    validation.value.strict || false ? "" : "%"
-                  }`
-                ),
-              },
-              {
-                nameZhHk: Like(
-                  `${validation.value.search}${
-                    validation.value.strict || false ? "" : "%"
-                  }`
-                ),
-              },
-            ]
-          : undefined,
+      const brandModel = new model.Brand();
+      const result = await brandModel.findAll({
+        limit: validation.value.limit,
+        offset: validation.value.offset,
+        order: validation.value.order,
+        search: validation.value.search,
+        strict: validation.value.strict,
       });
 
       res.send({ data: { brand: result } });
@@ -152,12 +120,9 @@ export const brand = {
       return res.status(400).send({ error: validation.error });
     }
 
-    const brandRepository = getRepository(Brand);
+    const brandModel = new model.Brand();
     try {
-      const brandToDelete = await brandRepository.findOne(validation.value.id);
-
-      if (brandToDelete) {
-        brandRepository.remove(brandToDelete);
+      if (await brandModel.remove(validation.value.id)) {
         return res.status(204).send();
       }
 
