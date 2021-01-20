@@ -25,7 +25,6 @@ export class Item {
   @Column({
     type: "varchar",
     length: 15,
-    unique: true,
   })
   barcodeType!: string;
 
