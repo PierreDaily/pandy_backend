@@ -5,3 +5,5 @@
 // module.exports = { create, get, getAll };
 
 export * from "./create";
+export * from "./get";
+export * from "./getAll";

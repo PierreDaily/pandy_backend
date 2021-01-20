@@ -61,6 +61,15 @@ export class Item {
     return newItem;
   }
 
+  public async findOneById(id: string) {
+    const reqItem = this.itemRepository.findOne(id);
+    if (reqItem === undefined) {
+      return;
+    }
+
+    return reqItem;
+  }
+
   public getList = async () => {
     const itemList = await this.itemRepository.find();
     return itemList;
