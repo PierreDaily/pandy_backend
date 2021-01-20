@@ -7,6 +7,7 @@ import controller from "./controller";
 import * as router from "./router";
 import { accessTokenMiddleWare, permissionMiddleware } from "./middleware";
 
+import * as model from "./model";
 const port = process.env.API_PORT;
 
 (async () => {
@@ -22,6 +23,8 @@ const port = process.env.API_PORT;
   app.use("/brand", router.brand);
   app.use("/branch", router.branch);
   app.use("/user", router.user);
+  const photoModel = new model.Item();
+  app.post("/item", controller.item.create);
 
   app.listen(port, () => console.log(`myapi listening on port ${port}!`));
 })();

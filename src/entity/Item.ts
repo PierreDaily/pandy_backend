@@ -35,7 +35,7 @@ export class Item {
   description!: string;
 
   @ManyToOne(() => Brand, (brand) => brand.id)
-  brand!: User;
+  brand!: Brand;
 
   @ManyToOne(() => User, (user) => user.name)
   createdBy!: User;
