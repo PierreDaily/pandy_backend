@@ -30,7 +30,7 @@ export const user = {
     }
 
     try {
-      const existingUser = UserModel.exist({ name, email });
+      const existingUser = await UserModel.exist({ name, email });
 
       if (existingUser) {
         return res
